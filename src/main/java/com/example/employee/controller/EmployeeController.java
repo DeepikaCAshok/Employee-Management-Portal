@@ -1,45 +1,45 @@
 package com.example.employee.controller;
 
 import com.example.employee.model.Employee;
+import com.example.employee.service.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
 public class EmployeeController {
 
-    private final Map<Long, Employee> employees = new HashMap<>();
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @PostMapping
     public Employee addEmployee(@RequestBody Employee employee) {
-        employees.put(employee.getId(), employee);
-        return employee;
+        return employeeService.addEmployee(employee);
     }
 
     @GetMapping
-    public Collection<Employee> getAllEmployees() {
-        return employees.values();
+    public List<Employee> getAllEmployees() {
+        return employeeService.getAllEmployees();
     }
 
     @GetMapping("/{id}")
     public Employee getEmployee(@PathVariable Long id) {
-        return employees.get(id);
+        return employeeService.getEmployee(id);
     }
 
     @PutMapping("/{id}")
     public Employee updateEmployee(@PathVariable Long id,
                                    @RequestBody Employee employee) {
-        employee.setId(id);
-        employees.put(id, employee);
-        return employee;
+        return employeeService.updateEmployee(id, employee);
     }
 
     @DeleteMapping("/{id}")
     public String deleteEmployee(@PathVariable Long id) {
-        employees.remove(id);
-        return "Employee Deleted";
+        employeeService.deleteEmployee(id);
+        return "Employee deleted successfully";
     }
 }
