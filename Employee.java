@@ -1,14 +1,24 @@
 package com.example.employee.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 public class Employee {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String email;
     private String department;
     private double salary;
 
-    public Employee() {}
+    public Employee() {
+    }
 
     public Employee(Long id, String name, String email, String department, double salary) {
         this.id = id;
