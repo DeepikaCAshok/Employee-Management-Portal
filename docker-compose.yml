@@ -1,37 +1,57 @@
-version: "3.8"
-
 services:
 
   mysql:
     image: mysql:8.0
     container_name: mysql-container
+    restart: always
+
     environment:
+      MYSQL_DATABASE: employee_db
+      MYSQL_USER: employee
+      MYSQL_PASSWORD: password
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: employeedb
+
     ports:
       - "3306:3306"
+
     volumes:
       - mysql-data:/var/lib/mysql
+
     networks:
       - employee-network
 
+
   springboot:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+
     image: springboot-app
+
     container_name: springboot-container
-    depends_on:
-      - mysql
+
+    restart: always
+
     ports:
       - "8083:8080"
+
+    depends_on:
+      - mysql
+
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employeedb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-      SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/employee_db
+      SPRING_DATASOURCE_USERNAME: employee
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+
     networks:
       - employee-network
+
 
 volumes:
   mysql-data:
 
+
 networks:
   employee-network:
+    driver: bridge
